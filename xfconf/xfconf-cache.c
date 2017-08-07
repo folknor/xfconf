@@ -152,7 +152,7 @@ typedef struct
 
     GCancellable *cancellable;
 
-    /**
+    /*
      * Variant to be send on the wire
      * Used in xfconf_cache_old_item_end_call
      * to end an already started call
@@ -238,47 +238,6 @@ xfconf_cache_old_item_end_call(gpointer key,
 
 
 /************************* XfconfCache ********************/
-
-
-/**
- * XfconfCache:
- *
- * An opaque structure that holds state about a cache.
- **/
-struct _XfconfCache
-{
-    GObject parent;
-
-    gchar *channel_name;
-
-#if 0
-    gint max_entries;
-    gint max_age;
-#endif
-
-    GTree *properties;
-
-    GHashTable *pending_calls;
-    GHashTable *old_properties;
-
-    gint g_signal_id;
-
-#if GLIB_CHECK_VERSION (2, 32, 0)
-    GMutex cache_lock;
-#else
-    GMutex *cache_lock;
-#endif
-};
-
-typedef struct _XfconfCacheClass
-{
-    GObjectClass parent;
-
-    void (*property_changed)(XfconfCache *cache,
-                             const gchar *channel_name,
-                             const gchar *property,
-                             const GValue *value);
-} XfconfCacheClass;
 
 enum
 {
@@ -684,16 +643,6 @@ out:
     xfconf_cache_mutex_unlock(cache);
 }
 #endif
-
-
-
-XfconfCache *
-xfconf_cache_new(const gchar *channel_name)
-{
-    return g_object_new(XFCONF_TYPE_CACHE,
-                        "channel-name", channel_name,
-                        NULL);
-}
 
 gboolean
 xfconf_cache_prefetch(XfconfCache *cache,

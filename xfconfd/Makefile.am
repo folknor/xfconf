@@ -5,6 +5,7 @@ AM_CPPFLAGS = \
 	-DLIBXFCONF_COMPILATION \
 	-DBINDIR=\"$(bindir)\" \
 	-DLOCALEDIR=\"$(localedir)\" \
+	-Wno-expansion-to-defined \
 	$(PLATFORM_CPPFLAGS)
 
 xfconfddir = $(HELPER_PATH_PREFIX)/xfce4/xfconf

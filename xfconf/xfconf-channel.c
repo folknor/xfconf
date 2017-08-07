@@ -519,7 +519,7 @@ xfconf_transform_array(GPtrArray *arr_src,
  *
  * The reference count of the returned channel is owned by libxfconf.
  *
- * Returns: An #XfconfChannel singleton.
+ * Returns: (transfer full): An #XfconfChannel singleton.
  *
  * Since: 4.5.91
  **/
@@ -638,7 +638,7 @@ xfconf_channel_is_property_locked(XfconfChannel *channel,
     gboolean locked = FALSE;
     gchar *real_property = REAL_PROP(channel, property);
     ERROR_DEFINE;
-    
+
     if (!xfconf_exported_call_is_property_locked_sync ((XfconfExported*)proxy, channel->channel_name,
                                                        property, &locked, NULL, ERROR))
     {
@@ -709,8 +709,9 @@ xfconf_channel_reset_property(XfconfChannel *channel,
  * retrieved.  To retrieve all properties in the channel,
  * specify "/" or %NULL for @property_base.
  *
- * Returns: A newly-allocated #GHashTable, which should be freed with
- *          g_hash_table_destroy() when no longer needed.
+ * Returns: (transfer full): A newly-allocated #GHashTable,
+ *          which should be freed with g_hash_table_destroy()
+ *          when no longer needed.
  **/
 GHashTable *
 xfconf_channel_get_properties(XfconfChannel *channel,
@@ -735,12 +736,12 @@ xfconf_channel_get_properties(XfconfChannel *channel,
         ERROR_CHECK;
         variant = NULL;
     }
-   
+
     if (variant) {
         properties = xfconf_gvariant_to_hash (variant);
         g_variant_unref (variant);
     }
-        
+
     if(real_property_base != property_base
        && real_property_base != channel->property_base)
     {
@@ -791,9 +792,9 @@ xfconf_channel_get_string(XfconfChannel *channel,
  *
  * Retrieves the string list value associated with @property on @channel.
  *
- * Returns: A newly-allocated string list which should be freed with
- *          g_strfreev() when no longer needed.  If @property is not in
- *          @channel, %NULL is returned.
+ * Returns: (transfer full): A newly-allocated string list which should be
+ *          freed with g_strfreev() when no longer needed.  If @property is
+ *          not in @channel, %NULL is returned.
  **/
 gchar **
 xfconf_channel_get_string_list(XfconfChannel *channel,
@@ -1034,7 +1035,7 @@ xfconf_channel_set_string_list(XfconfChannel *channel,
     /* count strings so we can prealloc */
     for(i = 0; values[i]; ++i)
         (void)0;
-    
+
     arr = g_ptr_array_sized_new(i);
     for(i = 0; values[i]; ++i) {
         val = g_new0(GValue, 1);
@@ -1304,7 +1305,7 @@ xfconf_channel_set_property(XfconfChannel *channel,
                          || g_value_get_string(value) == NULL
                          || g_utf8_validate(g_value_get_string(value), -1, NULL),
                          FALSE);
-    
+
     g_value_init(&val, G_VALUE_TYPE(value));
     g_value_copy(value, &val);
     ret = xfconf_channel_set_internal(channel, property, &val);
@@ -1482,8 +1483,9 @@ out:
  * a #GPtrArray, which can be freed with xfconf_array_free()
  * when no longer needed.
  *
- * Returns: A newly-allocated #GPtrArray on success, or %NULL
- *          on failure.
+ * Returns: (transfer full) (element-type GValue):
+ *          A newly-allocated #GPtrArray on success,
+ *          or %NULL on failure.
  **/
 GPtrArray *
 xfconf_channel_get_arrayv(XfconfChannel *channel,
@@ -1494,19 +1496,19 @@ xfconf_channel_get_arrayv(XfconfChannel *channel,
     gboolean ret;
 
     g_return_val_if_fail(XFCONF_IS_CHANNEL(channel) && property, NULL);
-    
+
     ret = xfconf_channel_get_internal(channel, property, &val);
-    
+
     if(!ret)
         return NULL;
-    
+
     if(G_TYPE_PTR_ARRAY != G_VALUE_TYPE(&val)) {
         g_warning ("Unexpected value type %s\n", G_VALUE_TYPE_NAME(&val));
         g_value_unset(&val);
         return NULL;
     }
-    
-    /**
+
+    /*
      * Arr is owned by the Gvalue in the cache
      * do not free it.
      **/
@@ -1611,7 +1613,7 @@ xfconf_channel_set_array_valist(XfconfChannel *channel,
             HANDLE_CASE(gdouble, DOUBLE, double)
             HANDLE_CASE(gboolean, BOOLEAN, boolean)
 #undef HANDLE_CASE
-            
+
             case G_TYPE_STRING: {
                 gchar *__val = va_arg(var_args, gchar *);
                 val = g_new0(GValue, 1);
@@ -1663,7 +1665,7 @@ out:
  * xfconf_channel_set_arrayv:
  * @channel: An #XfconfChannel.
  * @property: A property string.
- * @values: A #GPtrArray of #GValue<!-- -->s.
+ * @values: (element-type GValue): A #GPtrArray of #GValue<!-- -->s.
  *
  * Sets an array property on @channel, using the values in the
  * provided @values array.
@@ -1683,9 +1685,9 @@ xfconf_channel_set_arrayv(XfconfChannel *channel,
 
     g_value_init(&val, G_TYPE_PTR_ARRAY);
     g_value_set_static_boxed(&val, values);
-    
+
     ret = xfconf_channel_set_internal(channel, property, &val);
-    
+
     g_value_unset(&val);
 
     return ret;
@@ -1928,7 +1930,7 @@ xfconf_channel_get_structv(XfconfChannel *channel,
                 SET_STRUCT_VAL(gchar *, G_TYPE_STRING, ALIGNOF_GPOINTER,
                                g_value_dup_string);
                 break;
-            
+
             case G_TYPE_UCHAR:
                 SET_STRUCT_VAL(guchar, G_TYPE_UCHAR, ALIGNOF_GUCHAR,
                                g_value_get_uchar);
@@ -2152,7 +2154,7 @@ xfconf_channel_set_structv(XfconfChannel *channel,
                 GET_STRUCT_VAL(gchar *, G_TYPE_STRING, ALIGNOF_GPOINTER,
                                g_value_set_static_string);
                 break;
-            
+
             case G_TYPE_UCHAR:
                 GET_STRUCT_VAL(guchar, G_TYPE_UCHAR, ALIGNOF_GUCHAR,
                                g_value_set_uchar);
@@ -2237,8 +2239,8 @@ out:
  *
  * Lists all channels known in the Xfconf configuration store.
  *
- * Returns: A newly-allocated array of strings.  Free with
- *          g_strfreev() when no longer needed.
+ * Returns: (transfer full): A newly-allocated array of strings.
+ *          Free with g_strfreev() when no longer needed.
  **/
 /* this really belongs in xfconf.c, but i don't feel like including
  * xfconf-dbus-bindings.h twice, or copying the ERROR macros */
@@ -2249,7 +2251,7 @@ xfconf_list_channels(void)
     gchar **channels = NULL;
     ERROR_DEFINE;
 
-    if(!xfconf_exported_call_list_channels_sync ((XfconfExported*)proxy, 
+    if(!xfconf_exported_call_list_channels_sync ((XfconfExported*)proxy,
                                                &channels, NULL, ERROR))
         ERROR_CHECK;
 
