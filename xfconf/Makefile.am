@@ -18,7 +18,6 @@ libxfconfinclude_HEADERS = \
 	xfconf.h
 
 libxfconf_0_la_SOURCES = \
-	$(libxfconfinclude_HEADERS) \
 	xfconf-binding.c \
 	xfconf-cache.h \
 	xfconf-cache.c \
@@ -60,11 +59,7 @@ INTROSPECTION_SCANNER_ENV = CC="$(CC)"
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
 	--add-include-path=$(prefix)/share/gir-1.0 \
-	--warn-all \
-	--identifier-prefix=Xfconf \
-	--identifier-prefix=xfconf \
-	--identifier-prefix=Xfce \
-	--identifier-prefix=xfce
+	--warn-all
 INTROSPECTION_COMPILER_ARGS = \
 	--includedir=$(srcdir) \
 	--includedir=$(prefix)/share/gir-1.0 \
@@ -73,10 +68,15 @@ INTROSPECTION_COMPILER_ARGS = \
 if HAVE_INTROSPECTION
 libxfconf-0.gir: libxfconf-0.la Makefile
 libxfconf_0_gir_INCLUDES = GObject-2.0 GLib-2.0
+libxfconf_0_gir_PACKAGES = glib-2.0 gobject-2.0
 libxfconf_0_gir_CFLAGS = $(AM_CPPFLAGS)
 libxfconf_0_gir_LIBS = libxfconf-0.la
-libxfconf_0_gir_FILES = xfconf-channel.h xfconf-errors.h xfconf.h xfconf-binding.c xfconf-channel.c xfconf.c
+libxfconf_0_gir_FILES = xfconf-channel.h xfconf-errors.h xfconf.h xfconf-binding.c xfconf-channel.c xfconf.c $(top_srcdir)/common/xfconf-types.c
 libxfconf_0_gir_EXPORT_PACKAGES = libxfconf-0
+libxfconf_0_gir_SCANNERFLAGS = \
+	--identifier-prefix=Xfconf --symbol-prefix=xfconf \
+	--c-include="xfconf/xfconf.h"
+
 INTROSPECTION_GIRS += libxfconf-0.gir
 
 girdir = $(datadir)/gir-1.0
