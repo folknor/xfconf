@@ -3,6 +3,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-DLIBXFCONF_COMPILATION \
 	-DG_LOG_DOMAIN=\"xfconf\" \
+	-Wno-expansion-to-defined \
 	$(PLATFORM_CPPFLAGS)
 
 lib_LTLIBRARIES = libxfconf-0.la

@@ -3,6 +3,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-DLIBXFCONF_COMPILATION \
 	-DG_LOG_DOMAIN=\"xfconf-common\" \
+	-Wno-expansion-to-defined \
 	$(PLATFORM_CPPFLAGS)
 
 noinst_LTLIBRARIES = \
@@ -53,7 +54,7 @@ libxfconf_dbus_la_SOURCES = \
 libxfconf_dbus_la_CFLAGS = $(GIO_UNIX_CFLAGS)
 
 libxfconf_dbus_la_LIBADD = $(GIO_UNIX_LIBS)
-	
+
 
 BUILT_SOURCES = \
 	xfconf-marshal.c \
