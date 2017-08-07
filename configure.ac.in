@@ -98,6 +98,11 @@ dnl *** Check for gobject-introspection ***
 dnl ***************************************
 GOBJECT_INTROSPECTION_CHECK([1.30.0])
 
+dnl *************************
+dnl *** Check for vapigen ***
+dnl *************************
+VAPIGEN_CHECK()
+
 dnl check for perl bindings for --disable-perl-bindings and make-exo-alias.pl
 AC_PATH_PROGS([PERL], [perl5.8 perl5.6 perl5 perl])
 

@@ -93,6 +93,23 @@ EXTRA_DIST = \
 	abicheck.sh \
 	xfconf.symbols
 
+if ENABLE_VAPIGEN
+-include $(VAPIGEN_MAKEFILE)
+
+libxfconf-0.vapi: libxfconf-0.gir
+
+VAPIGEN_VAPIS = libxfconf-0.vapi
+VAPIGEN_GIRDIRS = $(prefix)/share/gir-1.0
+
+libxfconf_0_vapi_METADATADIRS = .
+libxfconf_0_vapi_FILES = libxfconf-0.gir
+
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = $(VAPIGEN_VAPIS)
+
+EXTRA_DIST += libxfconf-0.metadata
+endif
+
 # required for gtk-doc
 dist-hook: all
 
