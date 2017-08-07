@@ -75,7 +75,7 @@ libxfconf-0.gir: libxfconf-0.la Makefile
 libxfconf_0_gir_INCLUDES = GObject-2.0 GLib-2.0
 libxfconf_0_gir_CFLAGS = $(AM_CPPFLAGS)
 libxfconf_0_gir_LIBS = libxfconf-0.la
-libxfconf_0_gir_FILES = xfconf-binding.h xfconf-channel.h xfconf-errors.h xfconf-types.h xfconf.h xfconf-binding.c xfconf-channel.c xfconf.c
+libxfconf_0_gir_FILES = xfconf-channel.h xfconf-errors.h xfconf.h xfconf-binding.c xfconf-channel.c xfconf.c
 libxfconf_0_gir_EXPORT_PACKAGES = libxfconf-0
 INTROSPECTION_GIRS += libxfconf-0.gir
 
